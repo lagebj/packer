@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/packer/packer/plugin-getter/github"
 	"github.com/hashicorp/packer/version"
 	"github.com/posener/complete"
+    "github.com/lagebj/packer/packer/plugin-getter/artifactory"
 )
 
 type InitCommand struct {
@@ -93,6 +94,9 @@ func (c *InitCommand) RunContext(buildCtx context.Context, cla *InitArgs) int {
 			// variable.
 			UserAgent: "packer-getter-github-" + version.String(),
 		},
+		&artifactory.Getter{
+			UserAgent: "packer-getter-artifactory-" + version.String(),
+		},
 	}
 
 	ui := &packer.ColoredUi{
@@ -123,9 +127,9 @@ func (c *InitCommand) RunContext(buildCtx context.Context, cla *InitArgs) int {
 		if err != nil {
 			if pluginRequirement.Implicit {
 				msg := fmt.Sprintf(`
-Warning! At least one component used in your config file(s) has moved out of 
+Warning! At least one component used in your config file(s) has moved out of
 Packer into the %q plugin.
-For that reason, Packer init tried to install the latest version of the %s 
+For that reason, Packer init tried to install the latest version of the %s
 plugin. Unfortunately, this failed :
 %s`,
 					pluginRequirement.Identifier,
@@ -144,8 +148,8 @@ plugin. Unfortunately, this failed :
 				ui.Say(msg)
 
 				warn := fmt.Sprintf(`
-Warning, at least one component used in your config file(s) has moved out of 
-Packer into the %[2]q plugin and is now being implicitly required. 
+Warning, at least one component used in your config file(s) has moved out of
+Packer into the %[2]q plugin and is now being implicitly required.
 For more details on implicitly required plugins see https://packer.io/docs/commands/init#implicit-required-plugin
 
 To avoid any backward incompatible changes with your
